@@ -3,10 +3,11 @@ from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
 
 from app import db, create_app
+from app.models import User
 
 
 def make_shell_context():
-    return dict(app=app, db=db)
+    return dict(app=app, db=db, User=User)
 
 
 app = create_app(os.getenv('FLASKY_CONFIG', 'default'))
