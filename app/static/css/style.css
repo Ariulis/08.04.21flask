@@ -34,3 +34,7 @@ h2,
   padding-top: 150px;
   z-index: 100;
 }
+.show-error {
+  font-size: 0.75rem;
+  color: red;
+}
