@@ -28,6 +28,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean(), default=False)
     member_since = db.Column(db.DateTime, default=datetime.utcnow)
+    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
     def __init__(self, **kwargs):
@@ -38,6 +39,13 @@ class User(UserMixin, db.Model):
                 self.confirmed = True
             if self.role is None:
                 self.role = Role.query.filter_by(default=True).first()
+
+    # ping
+
+    def ping(self):
+        self.last_seen = datetime.utcnow()
+        db.session.add(self)
+        db.session.commit()
 
     # Generate confirmation token
 
