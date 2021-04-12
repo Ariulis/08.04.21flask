@@ -1,4 +1,5 @@
 from datetime import datetime
+from hashlib import md5
 from flask import current_app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -27,6 +28,10 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(64), index=True)
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean(), default=False)
+    name = db.Column(db.String(32))
+    location = db.Column(db.String(32))
+    about_me = db.Column(db.Text())
+    avatar_hash = db.Column(db.String(32))
     member_since = db.Column(db.DateTime, default=datetime.utcnow)
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
@@ -39,6 +44,19 @@ class User(UserMixin, db.Model):
                 self.confirmed = True
             if self.role is None:
                 self.role = Role.query.filter_by(default=True).first()
+
+        if self.email is not None and self.avatar_hash is None:
+            self.avatar_hash = self.gravatar_hash()
+
+    # Gravatar
+
+    def gravatar_hash(self):
+        return md5(self.email.lower().encode('utf-8')).hexdigest()
+
+    def gravatar(self, size=100, default='identicon', rating='g'):
+        url = 'https://secure.gravatar.com/avatar'
+        hash = self.avatar_hash or self.gravatar_hash()
+        return f'{url}/{hash}?size={size}&d={default}&r={rating}'
 
     # ping
 
