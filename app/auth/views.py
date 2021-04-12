@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, logout_user, login_required, current_user
 
 from . import auth
-from .forms import LoginForm, RegistrationForm
+from .forms import LoginForm, RegistrationForm, ResetPasswordForm, ResetPasswordRequestForm
 from .. import db
 from ..models import User
 from ..email import send_email
@@ -98,3 +98,40 @@ def before_request():
         current_user.ping()
         if not current_user.confirmed and request.endpoint and request.blueprint != 'auth' and request.endpoint != 'static':
             return redirect(url_for('auth.unconfirmed'))
+
+
+@auth.route('/reset-password', methods=['GET', 'POST'])
+def reset_password_request():
+    if not current_user.is_anonymous:
+        return redirect(url_for('main.index'))
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(
+            email=form.email.data.lower()).first_or_404()
+        token = user.generate_reset_password_token()
+        send_email(
+            user.email,
+            'Reset password',
+            'auth/email/reset_password',
+            user=user,
+            token=token
+        )
+        flash('An email with instructions to reset password has been sent to you.', 'info')
+        return redirect(url_for('auth.login'))
+    return render_template('auth/reset_password.html', form=form)
+
+
+@auth.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if not current_user.is_anonymous:
+        return redirect(url_for('main.index'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        new_password = form.password.data
+        if User.reset_password(new_password, token):
+            db.session.commit()
+            flash('Your password has been changed.', 'info')
+        else:
+            flash('Invalid request.', 'warning')
+        return redirect(url_for('auth.login'))
+    return render_template('auth/reset_password.html', form=form)
