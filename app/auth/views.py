@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, logout_user, login_required, current_user
 
 from . import auth
-from .forms import LoginForm, RegistrationForm, ResetPasswordForm, ResetPasswordRequestForm
+from .forms import LoginForm, RegistrationForm, ResetPasswordForm, ResetPasswordRequestForm, ChangePassword
 from .. import db
 from ..models import User
 from ..email import send_email
@@ -135,3 +135,18 @@ def reset_password(token):
             flash('Invalid request.', 'warning')
         return redirect(url_for('auth.login'))
     return render_template('auth/reset_password.html', form=form)
+
+
+@auth.route('/change-password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = ChangePassword()
+    if form.validate_on_submit():
+        if current_user.verify_password(form.old_password.data):
+            current_user.password = form.password.data
+            db.session.add(current_user)
+            db.session.commit()
+            flash('Your password has just been changed.', 'success')
+            return redirect(request.args.get('next') or url_for('main.index'))
+        flash('Invalid password.', 'warning')
+    return render_template('auth/change_password.html', form=form)
