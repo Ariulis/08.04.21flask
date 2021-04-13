@@ -100,7 +100,7 @@ class User(UserMixin, db.Model):
     def gravatar(self, size=100, default='identicon', rating='g'):
         url = 'https://secure.gravatar.com/avatar'
         hash = self.avatar_hash or self.gravatar_hash()
-        return f'{url}/{hash}?size={size}&d={default}&r={rating}'
+        return f'{url}/{hash}?s={size}&d={default}&r={rating}'
 
     # ping
 
