@@ -1,6 +1,6 @@
 {% macro forms(form) %}
-    <form class="form" method="POST">
-        {% set simple_inputs, checkbox_inputs = ['username', 'email', 'password', 'password2', 'old_password', 'role', 'name', 'location', 'about_me'], ['remember_me', 'confirmed'] %}
+    <form class="form mb-4" method="POST">
+        {% set simple_inputs, checkbox_inputs = ['body', 'username', 'email', 'password', 'password2', 'old_password', 'role', 'name', 'location', 'about_me'], ['remember_me', 'confirmed'] %}
         {% for field in form %}
             {% if field.name in simple_inputs %}
                 <div class="form-group">
@@ -26,4 +26,31 @@
             {% endif %}
         {% endfor %}
     </form>
+{% endmacro %}
+
+{% macro pagination_widget(pagination, endpoint) %}
+    {% if pagination.pages > 1 %}
+        <ul class="pagination">
+            <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                <a class="page-link" href="{% if pagination.has_prev %}{{ url_for(endpoint, page = pagination.page - 1, **kwargs) }}{% else %}#{% endif %}" {% if not pagination.has_prev %}tabindex="-1" aria-disabled="true"{% endif %}>Previous</a>
+            </li>
+            
+            {% for p in pagination.iter_pages() %}
+                {% if p %}
+                    <li class="page-item {% if p == pagination.page %}active{% endif %}" {% if p == pagination.page %}aria-current="page"{% endif %}>
+                        <a class="page-link" href="{{ url_for(endpoint, page = p, **kwargs) }}">{{ p }} {% if p == pagination.page %}<span class="sr-only">(current)</span>{% endif %}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">&hellip;</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                <a class="page-link" href="{% if pagination.has_next %}{{ url_for(endpoint, page = pagination.page + 1, **kwargs) }}{% else %}#{% endif %}" {% if not
+                    pagination.has_next %}tabindex="-1" aria-disabled="true" {% endif %}>Next</a>
+            </li>
+        </ul>
+    {% endif %}
 {% endmacro %}

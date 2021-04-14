@@ -38,3 +38,10 @@ h2,
   font-size: 0.75rem;
   color: red;
 }
+.pagination {
+  margin: 0 auto;
+  padding: 20px 15px;
+}
+.index-page .form {
+  display: none;
+}

@@ -13,6 +13,8 @@ class Config:
     MAIL_SUBJECT_PREFIX = '[Flasky]'
     MAIL_SENDER = 'Flasky admin <stylev38@gmail.com>'
 
+    POSTS_PER_PAGE = 5
+
     @staticmethod
     def init_app(app):
         pass

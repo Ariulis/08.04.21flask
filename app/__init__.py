@@ -3,15 +3,17 @@ from flask_admin import Admin
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
+from flask_ckeditor import CKEditor
 
 from config import config
-from .admin import HomeAdminView, UserAdminView
+from .admin import HomeAdminView, UserAdminView, PostAdminView
 
 db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
 mail = Mail()
+ckeditor = CKEditor()
 
 
 def create_app(config_name):
@@ -22,12 +24,14 @@ def create_app(config_name):
     db.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
+    ckeditor.init_app(app)
 
     # Admin
 
-    from .models import User
+    from .models import User, Post
     admin = Admin(app, 'FlaskyApp', url='/', index_view=HomeAdminView())
-    admin.add_views(UserAdminView(User, db.session))
+    admin.add_views(UserAdminView(User, db.session),
+                    PostAdminView(Post, db.session))
 
     # Blueprints
 

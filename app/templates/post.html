@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ super() }} - The post #{{ posts[0].id }}
+{% endblock title %}
+
+{% block content %}
+    <h1>The post #{{ posts[0].id }}</h1>
+    <hr>
+    <div class="row justify-content-center">
+        <div class="col-6">
+            {% include '_posts.html' %}
+        </div>
+    </div>
+{% endblock content %}

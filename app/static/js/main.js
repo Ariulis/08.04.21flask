@@ -9,6 +9,15 @@ const bootstrapColors = [
   "light",
   "dark",
 ];
+const formPreviewButton = document.querySelector(".form-preview button");
+const indexPageForm = document.querySelector(".index-page .form");
+
+if (formPreviewButton) {
+  formPreviewButton.addEventListener("click", function () {
+    formPreviewButton.parentElement.style.display = "none";
+    indexPageForm.style.display = "block";
+  });
+}
 
 preloader
   .querySelector(".spinner-border")
