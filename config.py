@@ -16,17 +16,6 @@ class Config:
     POSTS_PER_PAGE = 5
     COMMENTS_PER_PAGE = 2
 
-    @staticmethod
-    def init_app(app):
-        pass
-
-
-class DevelopmentConfig(Config):
-    DEBUG = True
-
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        'DEV_DATABASE_URL', 'postgresql://postgres:1@localhost/test')
-
     # Mail
 
     MAIL_SERVER = 'smtp.gmail.com'
@@ -34,6 +23,21 @@ class DevelopmentConfig(Config):
     MAIL_USE_TLS = True
     MAIL_USERNAME = os.getenv('MAIL_USERNAME')
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
+
+    @staticmethod
+    def init_app(app):
+        pass
+
+
+class DevelopmentConfig(Config):
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        'DEV_DATABASE_URL', 'postgresql://postgres:1@localhost/test')
+
+
+class ProductionConfig(Config):
+    DEBUG = False
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
 
 
 class TestConfig(Config):
@@ -44,5 +48,6 @@ class TestConfig(Config):
 config = {
     'default': DevelopmentConfig,
     'delopment': DevelopmentConfig,
-    'testing': TestConfig
+    'testing': TestConfig,
+    'production': ProductionConfig
 }
