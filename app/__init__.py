@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor
 
 from config import config
-from .admin import HomeAdminView, UserAdminView, PostAdminView
+from .admin import HomeAdminView, UserAdminView, PostAdminView, CommentAdminView
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -28,10 +28,12 @@ def create_app(config_name):
 
     # Admin
 
-    from .models import User, Post
+    from .models import User, Post, Comment
     admin = Admin(app, 'FlaskyApp', url='/', index_view=HomeAdminView())
     admin.add_views(UserAdminView(User, db.session),
-                    PostAdminView(Post, db.session))
+                    PostAdminView(Post, db.session),
+                    CommentAdminView(Comment, db.session),
+                    )
 
     # Blueprints
 

@@ -23,3 +23,7 @@ class UserAdminView(ModelView):
 
 class PostAdminView(ModelView):
     form_columns = ['body', 'author', 'timestamp']
+
+
+class CommentAdminView(ModelView):
+    form_columns = ['body', 'author', 'post', 'timestamp']

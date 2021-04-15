@@ -45,3 +45,8 @@ class EditProfileForm(FlaskForm):
 class PostForm(FlaskForm):
     body = CKEditorField('What is on your mind?', validators=[DataRequired()])
     submit = SubmitField('Save changes')
+
+
+class CommentForm(FlaskForm):
+    body = CKEditorField('Your comment', validators=[DataRequired()])
+    submit = SubmitField('Create comment')

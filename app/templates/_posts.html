@@ -14,6 +14,7 @@
                     {% elif current_user.is_administrator() %}
                         <a href="{{ url_for('main.edit_post', id=post.id) }}" class="badge badge-danger">Edit [admin] post</a>
                     {% endif %}
+                    <a href="{{ url_for('main.post', id=post.id) }}#comments" class="badge badge-warning">{{ post.comments.count() }} comments</a>
                 </li>
             </ul>
         </div>

@@ -16,6 +16,12 @@
                         <a class="nav-link" href="/admin">Admin</a>
                     </li>
                 {% endif %}
+                {% if current_user.can(Permission.MODERATE) %}
+                    <li class="nav-item {% if request.path == '/moderate' %}active{% endif %}">
+                        <a class="nav-link" href="{{ url_for('main.moderate') }}">Moderate comments {% if request.path == '/moderate' %}<span
+                                class="sr-only">(current)</span>{% endif %}</a>
+                    </li>
+                {% endif %}
                 {% set active = ['/profile/' + current_user.username, '/auth/change-password', '/auth/change-email'] %}
                 <li class="nav-item dropdown {% if request.path in active %}active{% endif %}">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
